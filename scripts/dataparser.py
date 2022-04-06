@@ -16,7 +16,7 @@ AREA_THRESHOLD = 50*50
 # function for reading the images
 # arguments: path to the traffic sign data, for example './GTSRB/Training'
 # returns: list of images, list of corresponding labels 
-def readTrafficSigns(rootpath):
+def readTrafficSigns(rootpath, area_threshold):
     class_list = []
 
     # loop over all 42 classes
@@ -29,7 +29,7 @@ def readTrafficSigns(rootpath):
         # loop over all images in current annotations file
         for filename, width, height, *rest in gtReader:
             area = int(width) * int(height)
-            if area >= AREA_THRESHOLD:            
+            if area >= area_threshold:            
                 file_data.append((filename, int(width), int(height)))
 
         class_list.append(file_data)
@@ -38,18 +38,18 @@ def readTrafficSigns(rootpath):
     return class_list
 
 
-def store_data(datapath, top, force):
+def store_data(datapath, top, area_threshold, force):
     if force:
         try:
             os.rmdir(f'{datapath}/ml-examples')
         except:
-            i = input('WARNING: Directory not empty. Continue? [y]/n ')
+            i = input(f'WARNING: Directory not empty. Proceeding to delete \'{datapath}/ml-examples\'. Continue [y]/n? ')
             if i.lower() in ['', 'y', 'yes']:
                 shutil.rmtree(f'{datapath}/ml-examples')
             else:
                 return
 
-    traffic_list = readTrafficSigns(f'{datapath}/original')
+    traffic_list = readTrafficSigns(f'{datapath}/original', area_threshold)
     rescount_dict = {i: len(x) for i, x in enumerate(traffic_list)}
     largest_img = {k: v for k, v in {k: v for k, v in sorted(rescount_dict.items(), key=lambda item: item[1], reverse=True)}.items()}
     try:
