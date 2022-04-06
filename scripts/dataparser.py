@@ -1,11 +1,13 @@
 import csv
-from logging import root
-from operator import gt
+import os
 import cv2 as cv
 import numpy as np
+import shutil
 
-from noise import *
-from main import ROOT_DIR
+from logging import root
+from operator import gt
+
+import scripts.noise as noise
 
 
 AREA_THRESHOLD = 50*50
@@ -15,10 +17,6 @@ AREA_THRESHOLD = 50*50
 # arguments: path to the traffic sign data, for example './GTSRB/Training'
 # returns: list of images, list of corresponding labels 
 def readTrafficSigns(rootpath):
-    '''Reads traffic sign data for German Traffic Sign Recognition Benchmark.
-
-    Arguments: path to the traffic sign data, for example './GTSRB/Training'
-    Returns:   list of images, list of corresponding labels'''
     class_list = []
 
     # loop over all 42 classes
@@ -37,34 +35,37 @@ def readTrafficSigns(rootpath):
         class_list.append(file_data)
         gtFile.close()
 
-
     return class_list
 
 
-def store(rootpath):
-    traffic_list = readTrafficSigns(f'{rootpath}/original')
+def store_data(datapath, top, force):
+    if force:
+        try:
+            os.rmdir(f'{datapath}/ml-examples')
+        except:
+            i = input('WARNING: Directory not empty. Continue? [y]/n ')
+            if i.lower() in ['', 'y', 'yes']:
+                shutil.rmtree(f'{datapath}/ml-examples')
+            else:
+                return
+
+    traffic_list = readTrafficSigns(f'{datapath}/original')
     rescount_dict = {i: len(x) for i, x in enumerate(traffic_list)}
     largest_img = {k: v for k, v in {k: v for k, v in sorted(rescount_dict.items(), key=lambda item: item[1], reverse=True)}.items()}
-
-
-    masks = os.listdir(f'{rootpath}/mask')
+    try:
+        os.mkdir(f'{datapath}/ml-examples')
+    except FileExistsError:
+        print('Folder exists. Use \'-f\' flag or delete /data/ml-examples.')
+    masks = os.listdir(f'{datapath}/mask')
     i = 0
-    for c in list(largest_img.keys())[:10]:
-        new_path = f'{rootpath}/training/{c:0>5}'
-        try:
-            os.mkdir(new_path)
-        except:
-            pass
+    for c in list(largest_img.keys())[:top]:
+        new_path = f'{datapath}/ml-examples/{c:0>5}'
+        os.mkdir(new_path)
 
         for img, width, height in traffic_list[c]:
-            img_path = f'{rootpath}/original/{c:0>5}/{img}'
-            mask_path = f'{rootpath}/mask/{masks[i]}'
+            img_path = f'{datapath}/original/{c:0>5}/{img}'
+            mask_path = f'{datapath}/mask/{masks[i]}'
 
             new_img = img.split('.')[0]
-            cv2.imwrite(f'{new_path}/{new_img}.png', apply(img_path, mask_path, width, height))
+            cv.imwrite(f'{new_path}/{new_img}.png', noise.apply(img_path, mask_path, width, height))
             i = (i + 1) % len(masks)
-
-
-store(f'{ROOT_DIR}/data')
-
-
