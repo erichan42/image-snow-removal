@@ -12,5 +12,5 @@ parser.add_argument('--set-top', '-t', type=int, default=10)
 parser.add_argument('--set-threshold', type=int, default=50*50)
 args = parser.parse_args()
 
-if args.init_data is not None:
+if args.init_data:
     dp.store_data(f'{ROOT_DIR}/data', args.set_top, args.set_threshold, args.force)
