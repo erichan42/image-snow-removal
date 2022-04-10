@@ -17,9 +17,9 @@ def create_dataset(img_folder, width=32, height=32):
   img_data_array=[]
   class_name=[]
   
-  for dir1 in os.listdir(img_folder):
-      for file in os.listdir(os.path.join(img_folder, dir1)):
-      
+
+  for dir1 in [name for name in os.listdir(img_folder) if not name.startswith('.')]:
+      for file in [name for name in os.listdir(os.path.join(img_folder, dir1)) if not name.startswith('.') and not name.endswith('.csv')]:
           image_path= os.path.join(img_folder, dir1,  file)
           image= cv2.imread( image_path, cv2.COLOR_BGR2RGB)
           image=cv2.resize(image, (height, width),interpolation = cv2.INTER_AREA)
