@@ -47,10 +47,19 @@ def init_model():
 
 if __name__ == "__main__":
     img_data, class_names = load_dataset(trainSnow=True)
+    num_train = int(0.8 * len(img_data))
+
+    img_array = mu.wrap_np_array(img_data)
+    train_img, test_img = img_array[:num_train], img_array[num_train:]
+
+    class_array = mu.wrap_np_array(list(class_names))
+    train_label, test_label = class_array[:num_train], class_array[num_train:]
+
 
     init_model().fit(
-        x = mu.wrap_np_array(img_data),
-        y = mu.wrap_np_array(list(class_names)),
+        x = train_img,
+        y = train_label,
         epochs=5,
+        validation_data = (test_img, test_label),
         )
     
