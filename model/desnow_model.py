@@ -33,7 +33,7 @@ class Denoise(Model):
         self.decoder.summary()
 
 
-def trained_model(x_train, x_test, x_train_noisy, x_test_noisy, num_epochs=10):
+def trained_denoiser(x_train, x_test, x_train_noisy, x_test_noisy, num_epochs=10):
     """Returns an autoencoder trained on the given data"""
     autoencoder = Denoise()
 
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     noisy_test = noisy_img_array[num_train:] # remainder
 
     # train model on data
-    denoiser_model = trained_model(clean_train, clean_test, noisy_train, noisy_test, num_epochs=5)
+    denoiser_model = trained_denoiser(clean_train, clean_test, noisy_train, noisy_test, num_epochs=5)
 
     # use model to denoise noisy images
     denoised_imgs = denoiser_model(noisy_test)
