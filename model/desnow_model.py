@@ -93,8 +93,6 @@ if __name__ == "__main__":
     clean_train = clean_img_array[:num_train] # first n
     clean_test = clean_img_array[num_train:] # remainder
     
-    print(clean_img_array.shape)
-    print(clean_test.shape)
     # noisy
     noisy_imgs, noisy_labels = mu.load_images(
         img_dir=os.path.join(mu.DATA_DIR, 'ml-examples'),
