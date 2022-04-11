@@ -59,7 +59,8 @@ def load_images(
     height=32,
     ):
     """
-    List of images from files in img_dir w/ img_ext, scaled to widthXheight
+    Parallel lists of images and labels from files in img_dir w/ img_ext, scaled to widthXheight
+    Tuple(Images, Labels)
     """
     return load_corresponding_images(
         pattern_dir=img_dir,

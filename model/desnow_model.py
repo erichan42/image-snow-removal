@@ -108,8 +108,8 @@ if __name__ == "__main__":
     denoiser_model = trained_model(clean_train, clean_test, noisy_train, noisy_test, num_epochs=5)
 
     # use model to denoise noisy images
-    decoded_imgs = denoiser_model(noisy_test)
+    denoised_imgs = denoiser_model(noisy_test)
 
     # plot them
-    plot_input_vs_output(clean_test, noisy_test, decoded_imgs, n=10)
+    plot_input_vs_output(clean_test, noisy_test, denoised_imgs, n=10)
 
