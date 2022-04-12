@@ -1,10 +1,10 @@
 import csv
 import os
+import time
 import cv2 as cv
 import numpy as np
 import shutil
 
-from logging import root
 from operator import gt
 
 import scripts.noise as noise
@@ -38,34 +38,43 @@ def readTrafficSigns(rootpath, area_threshold):
     return class_list
 
 
-def store_data(datapath, top, area_threshold, force):
+def store_data(datapath, top, area_threshold, force, n_mask, buildpath='ml-examples', maskpath='mask'):
     if force:
         try:
-            os.rmdir(f'{datapath}/ml-examples')
-        except:
-            i = input(f'WARNING: Directory not empty. Proceeding to delete \'{datapath}/ml-examples\'. Continue [y]/n? ')
+            os.rmdir(f'{datapath}/{buildpath}')
+        except OSError:
+            i = input(f'WARNING: Directory not empty. Proceeding to delete \'{datapath}/{buildpath}\'. Continue ([y]/n)? ')
             if i.lower() in ['', 'y', 'yes']:
-                shutil.rmtree(f'{datapath}/ml-examples')
+                shutil.rmtree(f'{datapath}/{buildpath}', ignore_errors=True)
+                while os.path.isdir(f'{datapath}/{buildpath}'):
+                    time.sleep(0.1)
+
+                os.mkdir(f'{datapath}/{buildpath}')
             else:
-                return
+                raise
 
     traffic_list = readTrafficSigns(f'{datapath}/original', area_threshold)
     rescount_dict = {i: len(x) for i, x in enumerate(traffic_list)}
     largest_img = {k: v for k, v in {k: v for k, v in sorted(rescount_dict.items(), key=lambda item: item[1], reverse=True)}.items()}
-    try:
-        os.mkdir(f'{datapath}/ml-examples')
-    except FileExistsError:
-        print('Folder exists. Use \'-f\' flag or delete /data/ml-examples.')
-    masks = os.listdir(f'{datapath}/mask')
+
+    masks = os.listdir(f'{datapath}/{maskpath}')
     i = 0
     for c in list(largest_img.keys())[:top]:
-        new_path = f'{datapath}/ml-examples/{c:0>5}'
+        new_path = f'{datapath}/{buildpath}/{c:0>5}'
         os.mkdir(new_path)
 
         for img, width, height in traffic_list[c]:
             img_path = f'{datapath}/original/{c:0>5}/{img}'
-            mask_path = f'{datapath}/mask/{masks[i]}'
+            # mask_path = f'{datapath}/maskpath/{}'
+            mask_path = [f'{datapath}/{maskpath}/{mask_file}' for mask_file in _build_mask_list(masks, n_mask, i)]
 
             new_img = img.split('.')[0]
             cv.imwrite(f'{new_path}/{new_img}.png', noise.apply(img_path, mask_path, width, height))
             i = (i + 1) % len(masks)
+
+
+def _build_mask_list(masks, n_mask, idx):
+    new_mask = masks[idx:idx + n_mask]
+    if idx + n_mask > len(masks):
+        new_mask.extend(masks[0:idx + n_mask - len(masks)])
+    return new_mask

@@ -1,13 +1,12 @@
 import os
 
-from  matplotlib import pyplot as plt
-import matplotlib.image as mpimg
+# from  matplotlib import pyplot as plt
+# import matplotlib.image as mpimg
 import numpy as np
-import random
 
 import cv2
 import tensorflow as tf
-from tensorflow.keras import datasets, layers, models
+from tensorflow.keras import layers, models
 
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -37,15 +36,8 @@ def load_dataset(trainSnow=True):
     img_folder = f'{ROOT_DIR}/../data/ml-examples'
 
   img_data, class_names = create_dataset(img_folder)
-  target_dict = {k: v for v, k in enumerate(np.unique(class_names))}
-  # print(class_names)
 
   return img_data, class_names
-  # (train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
-
-  # # Normalize pixel values to be between 0 and 1
-  # train_images, test_images = train_images / 255.0, test_images / 255.0
-  # return (train_images, train_labels), (test_images, test_labels)
 
 
 def train_model():
@@ -58,7 +50,7 @@ def train_model():
 
   model.add(layers.Flatten())
   model.add(layers.Dense(64, activation='relu'))
-  model.add(layers.Dense(10))
+  model.add(layers.Dense(43))
 
   model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -74,11 +66,6 @@ def fit():
 
   model = train_model()
   history = model.fit(x=np.array(img_data, np.float32), y=np.array(list(target_val), np.float32), epochs=5)
-  # (train_images, train_labels),(test_images, test_labels) = dataset
-
-  # model = train_model()
-  # history = model.fit(train_images, train_labels, epochs=10, 
-  #                     validation_data=(test_images, test_labels))
 
 
 fit()
