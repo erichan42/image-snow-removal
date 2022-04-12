@@ -24,7 +24,7 @@ def load_corresponding_images(
     width=32, height=32,
     ):
     """
-    Returns parallel lists of the subset of images in orig_dir that are in mask_dir
+    Returns parallel lists of the subset of images in src_dir that are in pattern_dir
     (image, label)
 
     Scales the loaded images to widthXheight
