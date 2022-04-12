@@ -10,6 +10,8 @@ from tensorflow.keras import layers, models
 import model_utils as mu
 from model_utils import DATA_DIR
 
+# what proportion of data is used as training data
+TRAIN_RATIO = 0.8
 
 def load_dataset(trainSnow=True):
     if trainSnow:
@@ -24,7 +26,7 @@ def load_dataset(trainSnow=True):
     return img_data, normalized_classes
 
 
-def init_model():
+def init_model(num_classes):
     """"
     returns an untrained classifier model
     """
@@ -37,7 +39,7 @@ def init_model():
 
     model.add(layers.Flatten())
     model.add(layers.Dense(64, activation='relu'))
-    model.add(layers.Dense(10))
+    model.add(layers.Dense(num_classes))
 
     model.compile(optimizer='adam',
                 loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -47,16 +49,17 @@ def init_model():
 
 if __name__ == "__main__":
     img_data, class_names = load_dataset(trainSnow=True)
-    num_train = int(0.8 * len(img_data))
+    num_train = int(TRAIN_RATIO * len(img_data))
 
     img_array = mu.wrap_np_array(img_data)
     train_img, test_img = img_array[:num_train], img_array[num_train:]
 
     class_array = mu.wrap_np_array(list(class_names))
     train_label, test_label = class_array[:num_train], class_array[num_train:]
+    
+    num_classes = len(set(class_names))
 
-
-    init_model().fit(
+    init_model(num_classes=num_classes).fit(
         x = train_img,
         y = train_label,
         epochs=5,
