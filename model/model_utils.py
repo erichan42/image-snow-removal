@@ -13,7 +13,7 @@ normalize labels,
 
 # # directory of data.
 # currently: this.currentdirectory.parent.data
-DATA_DIR = os.path.join(os.path.abspath(__file__), os.pardir, 'data')
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir, 'data')
 
 
 def load_corresponding_images(

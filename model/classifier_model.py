@@ -62,7 +62,8 @@ if __name__ == "__main__":
     init_model(num_classes=num_classes).fit(
         x = train_img,
         y = train_label,
-        epochs=5,
+        epochs=6,
         validation_data = (test_img, test_label),
+        shuffle=True
         )
     
