@@ -1,7 +1,13 @@
 dataset/*
 data/*
 data.zip
+graphs/
+new_data/
+epochs20/
+data1/
 
 __pycache__/
 
 .venv/
+
+.vscode/

@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     num_train = int(0.8 * len(clean_imgs))
 
-    clean_img_array = mu.wrap_np_array(clean_imgs)[..., tf.newaxis]
+    clean_img_array = mu.wrap_np_array(clean_imgs)
     clean_train = clean_img_array[:num_train] # first n
     clean_test = clean_img_array[num_train:] # remainder
     
@@ -98,7 +98,7 @@ if __name__ == "__main__":
         img_dir=os.path.join(mu.DATA_DIR, 'ml-examples'),
         img_ext='.png',
         )
-    noisy_img_array = mu.wrap_np_array(noisy_imgs)[..., tf.newaxis]
+    noisy_img_array = mu.wrap_np_array(noisy_imgs)
     noisy_train = noisy_img_array[:num_train] # first n
     noisy_test = noisy_img_array[num_train:] # remainder
 

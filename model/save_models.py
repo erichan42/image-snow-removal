@@ -39,29 +39,28 @@ def train_classifier(img_array, class_array, num_classes, epochs=5):
     return cl_model
 
 
-if __name__ == '__main__':
-    clean_imgs, clean_labels = mu.load_corresponding_images(
-        pattern_dir=os.path.join(mu.DATA_DIR, 'ml-examples'),
-        src_dir=os.path.join(mu.DATA_DIR, 'original'),
-        pattern_ext='.png',
-        src_ext='.ppm',
-        )
-    clean_imgs = mu.wrap_np_array(clean_imgs)
-    clean_labels = mu.wrap_np_array(clean_labels)
+clean_imgs, clean_labels = mu.load_corresponding_images(
+    pattern_dir=os.path.join(mu.DATA_DIR, 'ml-examples'),
+    src_dir=os.path.join(mu.DATA_DIR, 'original'),
+    pattern_ext='.png',
+    src_ext='.ppm',
+    )
+clean_imgs = mu.wrap_np_array(clean_imgs)
+clean_labels = mu.wrap_np_array(clean_labels)
 
-    noisy_imgs, noisy_labels = mu.load_images(
-        img_dir=os.path.join(mu.DATA_DIR, 'ml-examples'),
-        img_ext='.png',
-        )
-    noisy_imgs = mu.wrap_np_array(noisy_imgs)
-    noisy_labels = mu.wrap_np_array(noisy_labels)
+noisy_imgs, noisy_labels = mu.load_images(
+    img_dir=os.path.join(mu.DATA_DIR, 'ml-examples'),
+    img_ext='.png',
+    )
+noisy_imgs = mu.wrap_np_array(noisy_imgs)
+noisy_labels = mu.wrap_np_array(noisy_labels)
 
 
-    denoiser = train_desnow(clean_imgs, noisy_imgs)
-    denoiser.save_weights(f'./{SAVE_DIR}/denoiser')
+# denoiser = sm.train_desnow(clean_imgs, noisy_imgs)
+# # denoiser.save_weights(f'./{SAVE_DIR}/denoiser/denoiser')
 
-    classifier_orig = train_classifier(clean_imgs, clean_labels, len(set(clean_labels)))
-    classifier_orig.save_weights(f'./{SAVE_DIR}/classifier_orig')
+# classifier_orig = sm.train_classifier(clean_imgs, clean_labels, len(set(clean_labels)))
+# # classifier_orig.save_weights(f'./{SAVE_DIR}/classifier_orig/original')
 
-    classifier_noisy = train_classifier(noisy_imgs, noisy_labels, len(set(clean_labels)))
-    classifier_noisy.save_weights(f'./{SAVE_DIR}/classifier_noisy')
+# classifier_noisy = sm.train_classifier(noisy_imgs, noisy_labels, len(set(clean_labels)))
+# # classifier_noisy.save_weights(f'./{SAVE_DIR}/classifier_noisy/noisy')

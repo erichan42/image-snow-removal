@@ -30,8 +30,8 @@ def create_dataset(img_folder, width=32, height=32):
   return np.array(img_data_array), np.array(class_name)
 
 
-def load_dataset(trainSnow=True):
-  img_folder = f'{ROOT_DIR}/../data/original'
+def load_dataset(trainSnow=False):
+  img_folder = f'{ROOT_DIR}/../data/originalcp'
   if trainSnow:
     img_folder = f'{ROOT_DIR}/../data/ml-examples'
 
@@ -63,9 +63,11 @@ def fit():
   img_data, class_names = load_dataset()
   target_dict = {k: v for v, k in enumerate(np.unique(class_names))}
   target_val = [target_dict[class_names[i]] for i in range(len(class_names))]
+  shuffled_img_data = tf.random.shuffle(img_data, seed=12345)
+  shuffled_labels = tf.random.shuffle(target_val, seed=12345)
 
   model = train_model()
-  history = model.fit(x=np.array(img_data, np.float32), y=np.array(list(target_val), np.float32), epochs=5)
+  history = model.fit(x=np.array(shuffled_img_data, np.float32), y=np.array(shuffled_labels, np.float32), epochs=5)
 
 
 fit()

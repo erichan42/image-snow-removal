@@ -1,0 +1,2 @@
+model_checkpoint_path: "denoiser"
+all_model_checkpoint_paths: "denoiser"
