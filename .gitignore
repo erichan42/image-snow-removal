@@ -5,6 +5,7 @@ graphs/
 new_data/
 epochs20/
 data1/
+data_final/
 
 __pycache__/
 

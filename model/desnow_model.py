@@ -15,12 +15,12 @@ class Denoise(Model):
         super(Denoise, self).__init__()
         self.encoder = tf.keras.Sequential([
         layers.Input(shape=(32, 32, 3)),
-        layers.Conv2D(16, (3, 3), activation='relu', padding='same', strides=2),
-        layers.Conv2D(8, (3, 3), activation='relu', padding='same', strides=2)])
+        layers.Conv2D(32, (3, 3), activation='relu', padding='same', strides=2),
+        layers.Conv2D(32, (3, 3), activation='relu', padding='same', strides=2)])
 
         self.decoder = tf.keras.Sequential([
-        layers.Conv2DTranspose(8, kernel_size=3, strides=2, activation='relu', padding='same'),
-        layers.Conv2DTranspose(16, kernel_size=3, strides=2, activation='relu', padding='same'),
+        layers.Conv2DTranspose(32, kernel_size=3, strides=2, activation='relu', padding='same'),
+        layers.Conv2DTranspose(32, kernel_size=3, strides=2, activation='relu', padding='same'),
         layers.Conv2D(3, kernel_size=(3, 3), activation='sigmoid', padding='same')])
 
     def call(self, x):
@@ -52,8 +52,8 @@ def plot_input_vs_output(x_test_clean, x_test_noisy, decoded_imgs, n):
 
         # display original
         ax = plt.subplot(2, n, i + 1)
-        plt.title("original")
-        plt.imshow(tf.squeeze(x_test_clean[i]))
+        plt.title("noisy")
+        plt.imshow(tf.squeeze(x_test_noisy[i]))
         plt.gray()
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -103,11 +103,11 @@ if __name__ == "__main__":
     noisy_test = noisy_img_array[num_train:] # remainder
 
     # train model on data
-    denoiser_model = trained_denoiser(clean_train, clean_test, noisy_train, noisy_test, num_epochs=5)
+    denoiser_model = trained_denoiser(clean_train, clean_test, noisy_train, noisy_test, num_epochs=30)
 
     # use model to denoise noisy images
     denoised_imgs = denoiser_model(noisy_test)
 
     # plot them
-    plot_input_vs_output(clean_test, noisy_test, denoised_imgs, n=10)
+    plot_input_vs_output(clean_test, noisy_test, denoised_imgs, n=5)
 

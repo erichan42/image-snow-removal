@@ -57,10 +57,13 @@ noisy_labels = mu.wrap_np_array(noisy_labels)
 
 
 # denoiser = sm.train_desnow(clean_imgs, noisy_imgs)
-# # denoiser.save_weights(f'./{SAVE_DIR}/denoiser/denoiser')
+# denoiser.save_weights(f'./{SAVE_DIR}/denoiser/denoiser')
 
 # classifier_orig = sm.train_classifier(clean_imgs, clean_labels, len(set(clean_labels)))
 # # classifier_orig.save_weights(f'./{SAVE_DIR}/classifier_orig/original')
 
 # classifier_noisy = sm.train_classifier(noisy_imgs, noisy_labels, len(set(clean_labels)))
 # # classifier_noisy.save_weights(f'./{SAVE_DIR}/classifier_noisy/noisy')
+
+# for i, im in enumerate(cleaned_images0):
+#     cv.imwrite(f'epochs20/{im}', im)
